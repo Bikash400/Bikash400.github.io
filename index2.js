@@ -204,8 +204,13 @@ function removeFlip(id) {
   });
 
   document.querySelector(".start-btn").addEventListener("click",()=>{
-    document.querySelector(".game-start").classList.add("hide");
-    board = generateBoard();
+//     document.querySelector(".game-start").classList.add("hide");
+//     board = generateBoard();
+    document.querySelector(".game-start").innerHTML="Generating Board...";
+    setTimeout(()=>{
+      document.querySelector(".game-start").classList.add("hide");
+      board = generateBoard();
+    },1700)
   })
 
   document.querySelector(".btn-3x").addEventListener("click",(e)=>{
