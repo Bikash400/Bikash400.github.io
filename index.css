@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 body{
     font-family: 'Bebas Neue', cursive;
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(201, 201, 201);
 }
 .top{
     display: flex;
@@ -10,25 +10,24 @@ body{
     padding: 0;
     margin: 0;
 }
-.top h2{
-    margin: 0;
-    margin:10px 5px;
-    letter-spacing: 2px;
-}
+
 .bottom{
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
 }
 .visible{opacity: 1 !important;}
 .bottom .gameover-text{
-    color:rgb(255, 66, 66);
+    color:rgb(255, 19, 19);
+    letter-spacing: 2.5px;
     margin-bottom: 4px;
     opacity: 0;
     transition: opacity 2s;
 }
 .btn{
-    margin-top: 25px;
-    width: 80px;
+    margin-top: 10px;
+    width: auto;
     outline: 0;
     border: 0;
     padding: 8px 10px;
@@ -39,10 +38,20 @@ body{
     cursor: pointer;
     border-radius: 3px;
     transition: background-color .2s, color .2s;
-    border:.2px solid rgb(255, 127, 30);
+    border:.3px solid rgb(255, 127, 30);
     color:rgb(255, 127, 30);
 }
+.btn[disabled]{
+  opacity: .6;
+  border-color: lightgray;
+}
+.btn[disabled]:hover{
+    background-color: transparent;
+    cursor:default !important;
+    color: rgb(255, 127, 30);
+}
 .hide{display: none;}
+.circle{border-radius: 100%;}
 .btn:hover{
     background-color: rgb(255, 127, 30);
     color:white;
@@ -54,17 +63,54 @@ body{
     align-items: center;
     padding-bottom: 10px;
 }
-.container{
-    padding: 15px;
+.hide{display: none !important}
+.container-wrap{
+    height: 395px;
+    width: 330px;
+    padding: 10px 15px;
+    text-align: center;
     border-radius: 10px;
+    margin-top: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+}
+.container-wrap .game-start{
+    flex-direction: column;
+    display: flex;
+    width: auto;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+/** Styles Game Start Section **/
+.container-wrap .game-start h2{
+    margin: 0;
+    color:rgb(255, 127, 30);
+    font-size: 40px;
+}
+.game-board .menus h4{font-family: sans-serif;color:gray;}
+.game-board .menus{
+    display: flex;
+    width: 100%;
+    align-items: baseline;
+}
+.game-board .menus .btn-group{
+    justify-self: flex-end;
+    margin-left: 10px;
+}
+.btn-group .restart-btn{
+    margin-left: 62px;
+    padding:0;
+}
+.bgcolor{background-color: rgb(255, 127, 30);color:white;}
+.menus .btn{padding:2px 10px;font-size: 17px;}
+.container{
     display: grid;
     grid-template-columns:75px 75px 75px 75px;
     grid-template-rows: 75px 75px 75px 75px;
     grid-gap:10px;
     justify-content: space-between;
     perspective: 800px;
-    background-color: white;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
 }
 .item{
     transition: 0.8s ease-in-out;
@@ -73,12 +119,13 @@ body{
     background-color: rgb(255, 127, 30);
     border-radius: 10px;
     display: flex;
-     -webkit-tap-highlight-color: transparent;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+ -webkit-tap-highlight-color: transparent;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
 }
+
 .item .card-face{
     position: absolute;
     width:100%;
@@ -123,6 +170,7 @@ body{
     90% { transform: translate(1px, 2px) rotateY(180deg); }
     100% { transform: translate(1px, -2px) rotateY(179deg); }
   }
+
 @media (max-width:768px){
     .top h2{
         font-size: 40px;
