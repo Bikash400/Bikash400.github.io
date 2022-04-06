@@ -2,14 +2,9 @@
 function shuffle(array) {
   let currentIndex = array.length,
     randomIndex;
-
-  // While there remain elements to shuffle...
   while (currentIndex != 0) {
-    // Pick a remaining element...
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-
-    // And swap it with the current element.
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex],
       array[currentIndex],
@@ -74,12 +69,18 @@ function removeFlip(id) {
   const gameOverText = document.querySelector(".gameover-text");
   const container = document.querySelector(".container"); //Board
   
+  var board=undefined;
   //Generate New board when game starts
   function generateBoard(noOfflipChances=2) {
+    var powerUps =[
+      {name:"3x",used:false,stat:false,btn:document.querySelector(".btn-3x")},
+      {name:"flip",time:2,used:false,stat:false,btn:document.querySelector(".btn-flipAll")}
+    ]
     const ids = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7]; //Image Id
     const idsShuffled = shuffle(ids); // Image Ids shuffled
-    const board = { gameOver: false, cards: [], cardItems:[] }; // Track of cards & gameOver
+    const board = { gameOver: false,flipChances:noOfflipChances, cards: [], cardItems:[], powerUps:powerUps }; // Track of cards & gameOver
     //renders the cards
+    document.querySelector(".game-board").classList.remove("hide");
     container.innerHTML = ""; // Cleans the previously rendered cards
     for (let i = 0; i < 16; i++) {
       board.cards[i] = new Card(i, idsShuffled[i]); // Creates new card object for each card
@@ -93,7 +94,6 @@ function removeFlip(id) {
       flipNumber=0,
       matchedIndex=[],
       flippedCardsId=[],
-      flipChances=noOfflipChances,
       cycleRunning = false;
 
       cardItems.forEach((card, i) => {
@@ -125,14 +125,16 @@ function removeFlip(id) {
                             }, 700); 
                           }
                           setTimeout(()=>{
+                            threeXpowerup(board);
                             flippedCards = [];
                             flipNumber=0;
                             matchedIndex=[];
                             cycleRunning = false;
                           },1300)
+                          
                         })
                     }else{
-                        if(flipChances == flipNumber){
+                        if(board.flipChances == flipNumber){
                             cycleRunning=true;
                             setTimeout(() => {
                                 shake(flippedCardsId, "add");
@@ -147,10 +149,12 @@ function removeFlip(id) {
                                   flippedCards.forEach((card,i) =>{
                                     board.cards[card.id].flipped=false;
                                 })
+                                threeXpowerup(board)
                                   flippedCards = [];
                                   flipNumber=0;
                                 }, 600);
                               }, 700);
+                              
                         }
                     }
                   }else{
@@ -169,40 +173,53 @@ function removeFlip(id) {
       return board;
   }
 
-  var board = generateBoard(3);
   //Restart button
-  var disableBtn=false,disableFlip=false;
+  var disableBtn=false;
   restartBtn.addEventListener("click", (e) => {
     if(!disableBtn){
         if(board.gameOver){
             board.cardItems.forEach((card, i) => card.classList.remove("flipped"));
             disableBtn=true;
-            setTimeout(() =>{ board = generateBoard(3);disableBtn =false}, 800);
-            e.target.innerHTML="Flip";
-            gameOverText.classList.add("hide");
+            setTimeout(() =>{ 
+              board = generateBoard();
+              disableBtn =false;
+              gameOverText.classList.add("hide");
+              board.powerUps.forEach((power) =>{
+                power.btn.classList.remove("bgcolor");
+                power.btn.disabled=false;
+              })
+              console.log(board.powerUps)
+            }, 800);
+            e.target.innerHTML="Show";
+
         }else{
             board.cardItems.forEach((card, i) => card.classList.add("flipped"));
             disableBtn=true;
             setTimeout(() => disableBtn =false,700);
             e.target.innerHTML="Restart";
             board.gameOver=true;
+
         }
     }
   });
 
-  document.querySelector(".flip-btn").addEventListener("click",() =>{
-    if(!disableFlip){
-      disableFlip=true;
-board.cards.forEach((card) =>{
-  board.cardItems[card.id].classList.add("flipped");
-  card.flipped=true;
-})
-    setTimeout(() => {
-      board.cards.forEach((card) =>{
-        board.cardItems[card.id].classList.remove("flipped");
-        card.flipped=false;
-      })
-      disableFlip=false;
-    }, 3700);
+  document.querySelector(".start-btn").addEventListener("click",()=>{
+    document.querySelector(".game-start").classList.add("hide");
+    board = generateBoard();
+  })
+
+  document.querySelector(".btn-3x").addEventListener("click",(e)=>{
+    if(!board.powerUps[0].used && !board.gameOver){
+      board.flipChances=3;
+      board.powerUps[0].stat=true;
+      board.powerUps[0].btn.classList.add("bgcolor")
+    }
+  })
+
+  document.querySelector(".btn-flipAll").addEventListener("click",(e) =>{
+    if(!board.powerUps[1].used && !board.gameOver){
+      board.powerUps[1].stat=true;
+      board.powerUps[1].btn.classList.add("bgcolor");
+      previewPower(board);
     }
   })
